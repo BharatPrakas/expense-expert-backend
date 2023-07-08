@@ -23,7 +23,7 @@ const getCategories = async function (req, res) {
     where: {
       [Op.or]: [{ userId: null }, { userId: body.userId }]
     },
-    order: [['created']]
+    order: [['id']]
   }));
   if (err) return ReE(res, err, 422);
   return ReS(res, { category });
