@@ -420,6 +420,8 @@ const categoryBudget = async function (req, res) {
           }],
         }
       }));
+      console.log(budget)
+      console.log('-----------------')
       expense[i].limit = budget.dataValues.limit;
       expense[i].budgetId = budget.dataValues.id;
       console.log(categories[i].dataValues.name, '=', budget.dataValues.limit);
