@@ -69,6 +69,20 @@ const getMonthEarning = async function (req, res) {
 }
 module.exports.getMonthEarning = getMonthEarning;
 
+const getIncome = async function (req, res) {
+  let err;
+  let body = req.body;
+  [err, userIncome] = await to(User.findOne({
+    where: {
+      id: body.userId,
+    },
+    attributes: ['income'],
+  }));
+  if (err) return ReE(res, err, 422);
+  return ReS(res, { userIncome });
+}
+module.exports.getIncome = getIncome;
+
 const updateIncome = async function (req, res) {
   let err;
   let body = req.body;

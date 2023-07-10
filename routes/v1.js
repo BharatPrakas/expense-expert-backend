@@ -30,11 +30,12 @@ router.post('/updateBudget', passport.authenticate('jwt', { session: false }), E
 router.post('/updateExpense', passport.authenticate('jwt', { session: false }), ExpenseController.updateExpense);
 router.post('/deleteExpense', passport.authenticate('jwt', { session: false }), ExpenseController.deleteExpense);
 router.post('/dateFilter', passport.authenticate('jwt', { session: false }), ExpenseController.dateFilter);
-router.post('/categoryBudget', passport.authenticate('jwt', { session: false }), ExpenseController.categoryBudget);
+router.post('/categoryBudget', ExpenseController.categoryBudget);
 /* Earnings controlls */
 router.post('/createEarning', passport.authenticate('jwt', { session: false }), EarnedController.createEarning);
 router.post('/getEarnings', passport.authenticate('jwt', { session: false }), EarnedController.getEarnings);
 router.post('/getMonthEarning', passport.authenticate('jwt', { session: false }), EarnedController.getMonthEarning);
 router.post('/updateIncome', passport.authenticate('jwt', { session: false }), EarnedController.updateIncome);
+router.post('/getIncome', passport.authenticate('jwt', { session: false }), EarnedController.getIncome);
 router.post('/getEarnedCategory', passport.authenticate('jwt', { session: false }), EarnedController.getEarnedCategory);
 module.exports = router;
