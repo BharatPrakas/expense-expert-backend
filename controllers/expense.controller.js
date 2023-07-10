@@ -416,13 +416,11 @@ const categoryBudget = async function (req, res) {
       [err, budget] = await to(Budget.findOne({
         where: {
           [Op.and]: [{ categoryId: categories[i].dataValues.id }, {
-            [Op.or]: [{ userId: body.userId }, { userId: 'null' }],
+            [Op.or]: [{ userId: body.userId }, { userId: null }]
           }],
         }
       }));
-      console.log(budget)
-      console.log('-----------------')
-      expense[i].limit = budget.dataValues.limit;
+      expense[i].limit = budget.dataValues.limit ? budget.dataValues.limit : 0;
       expense[i].budgetId = budget.dataValues.id;
       console.log(categories[i].dataValues.name, '=', budget.dataValues.limit);
     };
