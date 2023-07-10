@@ -383,3 +383,46 @@ const dateFilter = async function (req, res) {
 }
 module.exports.dateFilter = dateFilter;
 
+const categoryBudget = async function (req, res) {
+  let err;
+  let body = req.body;
+  let expense = [];
+  [err, categories] = await to(Categories.findAll({
+    where: {
+      [Op.or]: [{ userId: null }, { userId: body.userId }],
+    },
+    include: [{
+      model: Expense,
+      attributes: ['amount']
+    }],
+    order: [['id']]
+  }));
+  if (err) return ReE(res, err, 422);
+  if (categories) {
+    let amount = 0;
+    for (let i = 0; i < categories.length; i++) {
+      for (let j = 0; j < categories[i].dataValues.expenses.length; j++) {
+        amount += categories[i].dataValues.expenses[j].dataValues.amount;
+      };
+      expense.push({
+        id: categories[i].dataValues.id,
+        userId: categories[i].dataValues.userId,
+        name: categories[i].dataValues.name,
+        icon: categories[i].dataValues.icon,
+        color: categories[i].dataValues.color,
+        amount: amount,
+      });
+      amount = 0;
+      [err, budget] = await to(Budget.findOne({
+        where: {
+          [Op.and]: [{ categoryId: categories[i].dataValues.id }, { userId: body.userId }],
+        }
+      }));
+      expense[i].limit = budget.dataValues.limit;
+      expense[i].budgetId = budget.dataValues.id;
+      console.log(categories[i].dataValues.name, '=', budget.dataValues.limit);
+    };
+  }
+  return ReS(res, { expense });
+}
+module.exports.categoryBudget = categoryBudget;
