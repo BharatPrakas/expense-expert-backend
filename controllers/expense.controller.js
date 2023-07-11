@@ -392,8 +392,11 @@ const categoryBudget = async function (req, res) {
       [Op.or]: [{ userId: null }, { userId: body.userId }],
     },
     include: [{
+      required: false,
       model: Expense,
-      attributes: ['amount']
+      where: {
+        userId: body.userId
+      }
     }],
     order: [['id']]
   }));
