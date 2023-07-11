@@ -30,7 +30,7 @@ router.post('/updateBudget', passport.authenticate('jwt', { session: false }), E
 router.post('/updateExpense', passport.authenticate('jwt', { session: false }), ExpenseController.updateExpense);
 router.post('/deleteExpense', passport.authenticate('jwt', { session: false }), ExpenseController.deleteExpense);
 router.post('/dateFilter', passport.authenticate('jwt', { session: false }), ExpenseController.dateFilter);
-router.post('/categoryBudget', ExpenseController.categoryBudget);
+router.post('/categoryBudget', passport.authenticate('jwt', { session: false }), ExpenseController.categoryBudget);
 /* Earnings controlls */
 router.post('/createEarning', passport.authenticate('jwt', { session: false }), EarnedController.createEarning);
 router.post('/getEarnings', passport.authenticate('jwt', { session: false }), EarnedController.getEarnings);

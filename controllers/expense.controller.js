@@ -247,7 +247,13 @@ module.exports.getBudget = getBudget;
 const setBudget = async function (req, res) {
   let err;
   let body = req.body;
-  [err, createdBudget] = await to(Budget.create(body));
+  [err, createdBudget] = await to(Budget.findOrCreate({
+    where: {
+      userId: body.userId,
+      categoryId: body.categoryId,
+    },
+    defaults: body,
+  }));
   if (err) return ReE(res, err, 422);
   return ReS(res, { createdBudget });
 }
@@ -258,7 +264,7 @@ const updateBudget = async function (req, res) {
   let body = req.body;
   [err, updatedBudget] = await to(Budget.update(body, {
     where: {
-      id: body.id,
+      [Op.and]: [{ id: body.id }, { userId: body.userId }]
     }
   }));
   if (err) return ReE(res, err, 422);
@@ -423,9 +429,12 @@ const categoryBudget = async function (req, res) {
           }],
         }
       }));
-      expense[i].limit = budget.dataValues.limit ? budget.dataValues.limit : 0;
-      expense[i].budgetId = budget.dataValues.id;
-      console.log(categories[i].dataValues.name, '=', budget.dataValues.limit);
+      if (budget !== null) {
+        expense[i].limit = budget.dataValues.limit ? budget.dataValues.limit : 0;
+        expense[i].budgetId = budget.dataValues.id;
+      } else {
+        expense[i].limit = null;
+      }
     };
   }
   return ReS(res, { expense });
