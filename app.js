@@ -6,6 +6,7 @@ var app = express();
 require('./config/config');     //instantiate configuration variables
 require('./global_functions');  //instantiate global functions
 require('./constants/messages'); //instantiate the errormessage logs.
+require('./constants/templates');
 console.log("Environment:", CONFIG.app);
 
 const logger = require('morgan');

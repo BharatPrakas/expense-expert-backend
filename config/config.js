@@ -12,6 +12,9 @@ CONFIG.db_name = process.env.DB_NAME || 'myapp';
 CONFIG.db_user = process.env.DB_USER || 'root';
 CONFIG.db_password = process.env.DB_PASSWORD || 'admin@123';
 
+CONFIG.MAIL_ID = process.env.MAIL_ID;
+CONFIG.PASSWORD = process.env.MAIL_PASSWORD;
+
 CONFIG.max_pool_conn = process.env.MAX_POOL_CONN || '50';
 CONFIG.min_pool_conn = process.env.MIN_POOL_CONN || '0';
 CONFIG.conn_idle_time = process.env.CONN_IDLE_TIME || '10000';
