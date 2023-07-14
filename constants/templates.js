@@ -8,7 +8,7 @@ TEMPLATE.verification = '<!DOCTYPE html>' + ' <html lang="en">' + '<head>' + '<m
   '<div style="padding: 15px; background-color:#818cf8; color: white; text-align: center; letter-spacing: 2px;">' +
   '<h2>Expense Expert</h2>' + '</div>' +
   '<div style="padding: 25px; text-align: center;border: 1px solid rgb(223, 217, 217);">' + '<h2 style="font-weight: 400;">Email Conformation</h2>' +
-  '<p style="font-size: 14px; color: #7A898D; line-height: 2">Hello, {{name}} you are almost ready to use <br>our application, simply click conform button to verify your email address</p>' +
+  '<p style="font-size: 14px; color: #7A898D; line-height: 2">Hello, {{name}} you are almost ready to use <br>our application, simply click confirm button to verify your email address</p>' +
   '<a href="http://expense-expert.web.app/validate-user/{{userId}}" target="_blank" style="font-size: 13px; text-decoration: none; padding: 10px 30px; border-radius: 8px; border: none; background-color: #818cf8; margin-top: 10px; color: white;">Verify</a>' +
   '<p style="font-size: 13px; margin-top: 20px; color: #7A898D;">Any help ? contact <a href="" style="color: black; cursor: pointer;"> Bharath</a></p>' +
   '</div>' + '</div>' + '</body>' + ' </html>'

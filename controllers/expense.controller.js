@@ -40,7 +40,10 @@ const addCategory = async function (req, res) {
     categoryId: newCategory.dataValues.id,
   };
   [err, newBudget] = await to(Budget.create(data));
-  return ReS(res, { newBudget });
+  if (newBudget) {
+    newCategory.dataValues.limit = newBudget.dataValues.limit;
+  }
+  return ReS(res, { newCategory });
 }
 module.exports.addCategory = addCategory;
 
