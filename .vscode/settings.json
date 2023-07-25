@@ -1,0 +1,4 @@
+{
+  "appService.defaultWebAppToDeploy": "/subscriptions/5d9fb503-f5d2-4f88-a76d-a492869f4586/resourceGroups/expense-expert/providers/Microsoft.Web/sites/expense-expert-backend/Deployments/subscriptions/5d9fb503-f5d2-4f88-a76d-a492869f4586/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/expense-expert-backend",
+  "appService.deploySubpath": "."
+}

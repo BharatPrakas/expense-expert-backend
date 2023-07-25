@@ -80,5 +80,10 @@ app.use(function (err, req, res, next) {
 });
 console.log('Instances loaded successfully.');
 
+// Schedule a cron job to run every minute
+const cron = require('node-cron');
+cron.schedule('10 * * * *', () => {
+  console.log('Restarting....');
+});
 
 module.exports = app;
