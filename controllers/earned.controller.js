@@ -32,9 +32,7 @@ const getEarnings = async function (req, res) {
   let body = req.body;
   [err, earnings] = await to(Earned.findAll({
     include: { model: Category, attributes: ['name'] },
-    where: {
-      userId: body.userId,
-    }
+    where: { userId: body.userId }
   }));
   if (err) return ReE(res, err, 422);
   return ReS(res, { earnings });
@@ -73,9 +71,7 @@ const getIncome = async function (req, res) {
   let err;
   let body = req.body;
   [err, userIncome] = await to(User.findOne({
-    where: {
-      id: body.userId,
-    },
+    where: { id: body.userId },
     attributes: ['income'],
   }));
   if (err) return ReE(res, err, 422);
@@ -87,11 +83,42 @@ const updateIncome = async function (req, res) {
   let err;
   let body = req.body;
   [err, updatedIncome] = await to(User.update(body, {
-    where: {
-      id: body.userId,
-    }
+    where: { id: body.userId }
   }));
   if (err) return ReE(res, err, 422);
   return ReS(res, { updatedIncome });
 }
 module.exports.updateIncome = updateIncome;
+
+const getEarning = async function (req, res) {
+  let err;
+  let body = req.body;
+  [err, earning] = await to(Earned.findOne({
+    where: { id: body.id }
+  }));
+  if (err) return ReE(res, err, 422);
+  return ReS(res, { earning });
+}
+module.exports.getEarning = getEarning;
+
+const updateEarning = async function (req, res) {
+  let err;
+  let body = req.body;
+  [err, updatedEarning] = await to(Earned.update(body, {
+    where: { id: body.id }
+  }));
+  if (err) return ReE(res, err, 422);
+  return ReS(res, { updatedEarning });
+}
+module.exports.updateEarning = updateEarning;
+
+const deleteEarning = async function (req, res) {
+  let err;
+  let body = req.body;
+  [err, deletedEarning] = await to(Earned.destroy({
+    where: { id: body.id }
+  }));
+  if (err) return ReE(res, err, 422);
+  return ReS(res, { deletedEarning });
+}
+module.exports.deleteEarning = deleteEarning;

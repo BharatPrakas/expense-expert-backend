@@ -1,8 +1,10 @@
 const moment = require('moment');
 const { Op } = require("sequelize");
 const Expense = require('../models').expense;
+const Earned = require('../models').earned;
 const Categories = require('../models').categories;
 const Budget = require('../models').budget;
+const EarnedCategory = require('../models').earnedcategory;
 
 const today = new Date();
 const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -51,16 +53,12 @@ const deleteCategory = async function (req, res) {
   let err;
   let body = req.body;
   [err, deleteBudget] = await to(Budget.destroy({
-    where: {
-      categoryId: body.categoryId,
-    }
+    where: { categoryId: body.categoryId }
   }));
   if (err) return ReE(res, err, 422);
   if (deleteBudget) {
     [err, deletedCategory] = await to(Categories.destroy({
-      where: {
-        id: body.categoryId,
-      }
+      where: { id: body.categoryId }
     }));
     return ReS(res, { deletedCategory });
   }
@@ -84,9 +82,7 @@ const getExpenses = async function (req, res) {
     include: [
       { model: Categories, attributes: ['name'] }
     ],
-    where: {
-      userId: body.userId,
-    },
+    where: { userId: body.userId, },
     order: [
       ['created', 'DESC'],
     ],
@@ -103,9 +99,7 @@ const getExpense = async function (req, res) {
     include: [
       { model: Categories, attributes: ['name'] }
     ],
-    where: {
-      id: body.id,
-    },
+    where: { id: body.id },
   }));
   if (err) return ReE(res, err, 422);
   return ReS(res, { expense });
@@ -224,8 +218,7 @@ const getWeeklyExpense = async function (req, res) {
       amount += weeklyExpense[j].dataValues.amount;
     };
     weekExpense.push({ day: weeks[i], amount: amount });
-  }
-
+  };
   if (err) return ReE(res, err, 422);
   return ReS(res, { weekExpense });
 }
@@ -275,14 +268,11 @@ const updateBudget = async function (req, res) {
 }
 module.exports.updateBudget = updateBudget;
 
-
 const updateExpense = async function (req, res) {
   let err;
   let body = req.body;
   [err, updatedExpense] = await to(Expense.update(body, {
-    where: {
-      id: body.id,
-    }
+    where: { id: body.id, }
   }));
   if (err) return ReE(res, err, 422);
   return ReS(res, { updatedExpense });
@@ -293,9 +283,7 @@ const deleteExpense = async function (req, res) {
   let err;
   let body = req.body;
   [err, deletedExpense] = await to(Expense.destroy({
-    where: {
-      id: body.id,
-    }
+    where: { id: body.id }
   }));
   if (err) return ReE(res, err, 422);
   return ReS(res, { deletedExpense });
@@ -323,6 +311,9 @@ const dateFilter = async function (req, res) {
             },
             userId: body.userId,
           },
+          order: [
+            ['created', 'DESC'],
+          ],
         }));
         if (err) return ReE(res, err, 422);
         return ReS(res, { records });
@@ -342,6 +333,9 @@ const dateFilter = async function (req, res) {
             },
             userId: body.userId,
           },
+          order: [
+            ['created', 'DESC'],
+          ],
         }));
         if (err) return ReE(res, err, 422);
         return ReS(res, { records });
@@ -363,6 +357,9 @@ const dateFilter = async function (req, res) {
             },
             userId: body.userId,
           },
+          order: [
+            ['created', 'DESC'],
+          ],
         }));
         if (err) return ReE(res, err, 422);
         return ReS(res, { records });
@@ -384,9 +381,126 @@ const dateFilter = async function (req, res) {
             },
             userId: body.userId,
           },
+          order: [
+            ['created', 'DESC'],
+          ],
         }));
         if (err) return ReE(res, err, 422);
         return ReS(res, { records });
+    }
+  } else {
+    if (body.mode === 2) {
+      switch (body.range) {
+        /** today **/
+        case 'today':
+          const today = moment.utc().startOf('day');
+          [err, records] = await to(Earned.findAll({
+            include: {
+              model: EarnedCategory
+            },
+            where: {
+              created: {
+                [Op.between]: [
+                  moment.utc(today).format('YYYY-MM-DD 00:00:00'),
+                  moment.utc(today).format('YYYY-MM-DD 23:59:59'),
+                ],
+              },
+              userId: body.userId,
+            },
+            order: [
+              ['created', 'DESC'],
+            ],
+          }));
+          if (records) {
+            records.forEach((x) => {
+              x.dataValues.category = x.dataValues.earnedcategory.name;
+            });
+          }
+          if (err) return ReE(res, err, 422);
+          return ReS(res, { records });
+        case 'yesterday':
+          const yesterday = moment.utc().subtract(1, 'day');
+          [err, records] = await to(Earned.findAll({
+            include: {
+              model: EarnedCategory
+            },
+            where: {
+              created: {
+                [Op.between]: [
+                  moment.utc(yesterday).format('YYYY-MM-DD 00:00:00'),
+                  moment.utc(yesterday).format('YYYY-MM-DD 23:59:59'),
+                ],
+              },
+              userId: body.userId,
+            },
+            order: [
+              ['created', 'DESC'],
+            ],
+          }));
+          if (records) {
+            records.forEach((x) => {
+              x.dataValues.category = x.dataValues.earnedcategory.name;
+            });
+          }
+          if (err) return ReE(res, err, 422);
+          return ReS(res, { records });
+        case 'this week':
+          const currentDate = moment().utc();
+          const startDate = currentDate.clone().startOf('isoWeek');
+          const endDate = currentDate.clone().endOf('isoWeek');
+          [err, records] = await to(Earned.findAll({
+            include: {
+              model: EarnedCategory
+            },
+            where: {
+              created: {
+                [Op.between]: [
+                  moment.utc(startDate).format('YYYY-MM-DD 00:00:00'),
+                  moment.utc(endDate).format('YYYY-MM-DD 23:59:59'),
+                ],
+              },
+              userId: body.userId,
+            },
+            order: [
+              ['created', 'DESC'],
+            ],
+          }));
+          if (records) {
+            records.forEach((x) => {
+              x.dataValues.category = x.dataValues.earnedcategory.name;
+            });
+          }
+          if (err) return ReE(res, err, 422);
+          return ReS(res, { records });
+        case 'this month':
+          const date = moment().utc();
+          const monthStart = date.clone().startOf('month').utc();
+          const monthEnd = date.clone().endOf('month').utc();
+          [err, records] = await to(Earned.findAll({
+            include: {
+              model: EarnedCategory
+            },
+            where: {
+              created: {
+                [Op.between]: [
+                  moment.utc(monthStart).format('YYYY-MM-DD 00:00:00'),
+                  moment.utc(monthEnd).format('YYYY-MM-DD 23:59:59'),
+                ],
+              },
+              userId: body.userId,
+            },
+            order: [
+              ['created', 'DESC'],
+            ],
+          }));
+          if (records) {
+            records.forEach((x) => {
+              x.dataValues.category = x.dataValues.earnedcategory.name;
+            });
+          }
+          if (err) return ReE(res, err, 422);
+          return ReS(res, { records });
+      }
     }
   }
 }
@@ -404,7 +518,13 @@ const categoryBudget = async function (req, res) {
       required: false,
       model: Expense,
       where: {
-        userId: body.userId
+        userId: body.userId,
+        created: {
+          [Op.between]: [
+            moment.utc(firstDay).format('YYYY-MM-DD 00:00:00'),
+            moment.utc(today).format('YYYY-MM-DD 23:59:59')
+          ],
+        },
       }
     }],
     order: [['id']]
