@@ -55,3 +55,11 @@ const activateUser = async function (req, res) {
   return ReS(res, { user });
 }
 module.exports.activateUser = activateUser;
+
+const serviceRestart = async function (req, res) {
+  let err;
+  let body = req.body;
+  if (err) return ReE(res, err, 422);
+  return ReS(res, { message: 'Service restarted successfully!' });
+}
+module.exports.serviceRestart = serviceRestart;

@@ -9,6 +9,9 @@ const UserController = require('../controllers/user.controller');
 const ExpenseController = require('../controllers/expense.controller');
 const EarnedController = require('../controllers/earned.controller');
 
+/** Endpoint for restarting server for every 20mins */
+router.get('/restartService', UserController.serviceRestart);
+
 router.post('/login', UserAccountController.login);
 router.post('/createUser', UserController.createUser);
 router.post('/getuserInfo', passport.authenticate('jwt', { session: false }), UserController.getuserInfo);
