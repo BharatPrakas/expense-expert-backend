@@ -296,7 +296,7 @@ const dateFilter = async function (req, res) {
   if (body.mode === 1) {
     switch (body.range) {
       /** today **/
-      case 'today':
+      case 'Today':
         const today = moment.utc().startOf('day');
         [err, records] = await to(Expense.findAll({
           include: {
@@ -318,7 +318,7 @@ const dateFilter = async function (req, res) {
         if (err) return ReE(res, err, 422);
         return ReS(res, { records });
       //** yesterday **//
-      case 'yesterday':
+      case 'Yesterday':
         const yesterday = moment.utc().subtract(1, 'day');
         [err, records] = await to(Expense.findAll({
           include: {
@@ -340,7 +340,7 @@ const dateFilter = async function (req, res) {
         if (err) return ReE(res, err, 422);
         return ReS(res, { records });
       //** this week **//
-      case 'this week':
+      case 'This week':
         const currentDate = moment().utc();
         const startDate = currentDate.clone().startOf('isoWeek');
         const endDate = currentDate.clone().endOf('isoWeek');
@@ -364,7 +364,7 @@ const dateFilter = async function (req, res) {
         if (err) return ReE(res, err, 422);
         return ReS(res, { records });
       //** this month **//
-      case 'this month':
+      case 'This month':
         const date = moment().utc();
         const monthStart = date.clone().startOf('month').utc();
         const monthEnd = date.clone().endOf('month').utc();
@@ -392,7 +392,7 @@ const dateFilter = async function (req, res) {
     if (body.mode === 2) {
       switch (body.range) {
         /** today **/
-        case 'today':
+        case 'Today':
           const today = moment.utc().startOf('day');
           [err, records] = await to(Earned.findAll({
             include: {
@@ -418,7 +418,7 @@ const dateFilter = async function (req, res) {
           }
           if (err) return ReE(res, err, 422);
           return ReS(res, { records });
-        case 'yesterday':
+        case 'Yesterday':
           const yesterday = moment.utc().subtract(1, 'day');
           [err, records] = await to(Earned.findAll({
             include: {
@@ -444,7 +444,7 @@ const dateFilter = async function (req, res) {
           }
           if (err) return ReE(res, err, 422);
           return ReS(res, { records });
-        case 'this week':
+        case 'This week':
           const currentDate = moment().utc();
           const startDate = currentDate.clone().startOf('isoWeek');
           const endDate = currentDate.clone().endOf('isoWeek');
@@ -472,7 +472,7 @@ const dateFilter = async function (req, res) {
           }
           if (err) return ReE(res, err, 422);
           return ReS(res, { records });
-        case 'this month':
+        case 'This month':
           const date = moment().utc();
           const monthStart = date.clone().startOf('month').utc();
           const monthEnd = date.clone().endOf('month').utc();

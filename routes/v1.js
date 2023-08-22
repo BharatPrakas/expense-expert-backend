@@ -8,9 +8,7 @@ const UserAccountController = require('../controllers/userAccount.controller');
 const UserController = require('../controllers/user.controller');
 const ExpenseController = require('../controllers/expense.controller');
 const EarnedController = require('../controllers/earned.controller');
-
-/** Endpoint for restarting server for every 20mins */
-router.get('/restartService', UserController.serviceRestart);
+const AnnouncementController = require('../controllers/announcement.controller');
 
 router.post('/login', UserAccountController.login);
 router.post('/createUser', UserController.createUser);
@@ -45,4 +43,9 @@ router.post('/updateEarning', passport.authenticate('jwt', { session: false }), 
 router.post('/deleteEarning', passport.authenticate('jwt', { session: false }), EarnedController.deleteEarning);
 router.post('/getIncome', passport.authenticate('jwt', { session: false }), EarnedController.getIncome);
 router.post('/getEarnedCategory', passport.authenticate('jwt', { session: false }), EarnedController.getEarnedCategory);
+/**Announcement controller */
+router.get('/getAnnouncement', passport.authenticate('jwt', { session: false }), AnnouncementController.getAnnouncement);
+router.post('/createAnnouncement', passport.authenticate('jwt', { session: false }), AnnouncementController.createAnnouncement);
+router.get('/getViewedAnnouncement', passport.authenticate('jwt', { session: false }), AnnouncementController.getViewedAnnouncement);
+router.post('/updateViewedAnnouncement', passport.authenticate('jwt', { session: false }), AnnouncementController.updateViewedAnnouncement);
 module.exports = router;
