@@ -47,7 +47,7 @@ router.post('/getIncome', passport.authenticate('jwt', { session: false }), Earn
 router.post('/getEarnedCategory', passport.authenticate('jwt', { session: false }), EarnedController.getEarnedCategory);
 /**Announcement controller */
 router.get('/getAnnouncement', passport.authenticate('jwt', { session: false }), AnnouncementController.getAnnouncement);
-router.post('/createAnnouncement', passport.authenticate('jwt', { session: false }), AnnouncementController.createAnnouncement);
+router.post('/createAnnouncement', AnnouncementController.createAnnouncement);
 router.get('/getViewedAnnouncement', passport.authenticate('jwt', { session: false }), AnnouncementController.getViewedAnnouncement);
 router.post('/updateViewedAnnouncement', passport.authenticate('jwt', { session: false }), AnnouncementController.updateViewedAnnouncement);
 module.exports = router;
