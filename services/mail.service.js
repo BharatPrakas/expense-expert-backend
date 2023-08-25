@@ -3,7 +3,7 @@ const nodemailer = require('nodemailer');
 let err, response;
 const sendMail = async function (mailOption, template) {
   const mailOptions = {
-    from: CONFIG.MAIL_ID,
+    from: 'Expense Expert' + ' ' + '<' + CONFIG.MAIL_ID + '>',
     to: mailOption.to,
     subject: mailOption.subject,
     html: template,

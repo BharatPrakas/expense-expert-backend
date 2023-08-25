@@ -14,6 +14,8 @@ router.post('/login', UserAccountController.login);
 router.post('/createUser', UserController.createUser);
 router.post('/getuserInfo', passport.authenticate('jwt', { session: false }), UserController.getuserInfo);
 router.post('/activateUser', UserController.activateUser);
+router.post('/changePasswordRequest', UserController.changePasswordRequest);
+router.post('/updatePassword', UserController.updatePassword);
 /* expense controlls */
 router.get('/getCategory', passport.authenticate('jwt', { session: false }), ExpenseController.getCategory);
 router.post('/getCategories', passport.authenticate('jwt', { session: false }), ExpenseController.getCategories);
