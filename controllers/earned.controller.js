@@ -7,6 +7,7 @@ const User = require('../models').users;
 const createEarning = async function (req, res) {
   let err;
   let body = req.body;
+  body.userId = req.user.id;
   [err, earnings] = await to(Earned.create(body));
   if (err) return ReE(res, err, 422);
   return ReS(res, { earnings });
@@ -18,7 +19,7 @@ const getEarnedCategory = async function (req, res) {
   let body = req.body;
   [err, categories] = await to(Category.findAll({
     where: {
-      [Op.or]: [{ userId: null }, { userId: body.userId }]
+      [Op.or]: [{ userId: null }, { userId: req.user.id }]
     },
     attributes: ['id', 'name'],
   }));
@@ -32,7 +33,7 @@ const getEarnings = async function (req, res) {
   let body = req.body;
   [err, earnings] = await to(Earned.findAll({
     include: { model: Category, attributes: ['name'] },
-    where: { userId: body.userId }
+    where: { userId: req.user.id }
   }));
   if (err) return ReE(res, err, 422);
   return ReS(res, { earnings });
@@ -54,7 +55,7 @@ const getMonthEarning = async function (req, res) {
           moment.utc(today).format('YYYY-MM-DD 23:59:59')
         ]
       },
-      userId: body.userId,
+      userId: req.user.id,
     }
   }));
   if (allEarnings) {
@@ -71,7 +72,7 @@ const getIncome = async function (req, res) {
   let err;
   let body = req.body;
   [err, userIncome] = await to(User.findOne({
-    where: { id: body.userId },
+    where: { id: req.user.id },
     attributes: ['income'],
   }));
   if (err) return ReE(res, err, 422);
@@ -83,7 +84,7 @@ const updateIncome = async function (req, res) {
   let err;
   let body = req.body;
   [err, updatedIncome] = await to(User.update(body, {
-    where: { id: body.userId }
+    where: { id: req.user.id }
   }));
   if (err) return ReE(res, err, 422);
   return ReS(res, { updatedIncome });

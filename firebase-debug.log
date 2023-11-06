@@ -1,0 +1,100 @@
+[debug] [2023-09-04T13:19:02.843Z] ----------------------------------------------------------------------
+[debug] [2023-09-04T13:19:02.844Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Centizen_user\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2023-09-04T13:19:02.844Z] CLI Version:   12.4.3
+[debug] [2023-09-04T13:19:02.845Z] Platform:      win32
+[debug] [2023-09-04T13:19:02.845Z] Node Version:  v18.14.2
+[debug] [2023-09-04T13:19:02.845Z] Time:          Mon Sep 04 2023 18:49:02 GMT+0530 (India Standard Time)
+[debug] [2023-09-04T13:19:02.845Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2023-09-04T13:19:02.848Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2023-09-04T13:19:02.953Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-09-04T13:19:02.954Z] > authorizing via signed-in user (bharathprakash2395@gmail.com)
+[debug] [2023-09-04T13:19:02.955Z] [iam] checking project expense-expert for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2023-09-04T13:19:02.956Z] > refreshing access token with scopes: []
+[debug] [2023-09-04T13:19:02.958Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2023-09-04T13:19:02.958Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2023-09-04T13:19:03.169Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2023-09-04T13:19:03.169Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2023-09-04T13:19:03.176Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/expense-expert:testIamPermissions [none]
+[debug] [2023-09-04T13:19:03.176Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/expense-expert:testIamPermissions x-goog-quota-user=projects/expense-expert
+[debug] [2023-09-04T13:19:03.177Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/expense-expert:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2023-09-04T13:19:03.541Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2023-09-04T13:19:03.542Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2023-09-04T13:19:04.609Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/expense-expert:testIamPermissions 200
+[debug] [2023-09-04T13:19:04.610Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/expense-expert:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2023-09-04T13:19:04.612Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/expense-expert [none]
+[debug] [2023-09-04T13:19:05.081Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/expense-expert 200
+[debug] [2023-09-04T13:19:05.082Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/expense-expert {"projectId":"expense-expert","projectNumber":"346740129785","displayName":"Expense-Expert","name":"projects/expense-expert","resources":{"hostingSite":"expense-expert"},"state":"ACTIVE","etag":"1_b1d4885f-731b-4763-ac0f-a2325a9d1812"}
+[info] 
+[info] === Deploying to 'expense-expert'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2023-09-04T13:19:05.092Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/expense-expert/versions [none]
+[debug] [2023-09-04T13:19:05.093Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/expense-expert/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2023-09-04T13:19:06.526Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/expense-expert/versions 200
+[debug] [2023-09-04T13:19:06.527Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/expense-expert/versions {"name":"projects/346740129785/sites/expense-expert/versions/fc4c175571c3fbfe","status":"CREATED","config":{},"labels":{"deployment-tool":"cli-firebase"}}
+[info] i  hosting[expense-expert]: beginning deploy... 
+[info] i  hosting[expense-expert]: found 7 files in dist 
+[debug] [2023-09-04T13:19:06.541Z] [hosting] uploading with 200 concurrency
+[debug] [2023-09-04T13:19:06.625Z] [hosting] hash cache [ZGlzdA] stored for 7 files
+[debug] [2023-09-04T13:19:06.626Z] [hosting][hash queue][FINAL] {"max":74,"min":1,"avg":14.571428571428571,"active":0,"complete":7,"success":7,"errored":0,"retried":0,"total":7,"elapsed":80}
+[debug] [2023-09-04T13:19:06.627Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/346740129785/sites/expense-expert/versions/fc4c175571c3fbfe:populateFiles [none]
+[debug] [2023-09-04T13:19:06.628Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/346740129785/sites/expense-expert/versions/fc4c175571c3fbfe:populateFiles {"files":{"/favicon.ico":"5aafcd8ae034f805ff899f16243dfbbf2605fd97c94f41570b623bf69f156566","/index.html":"5f768918287a20c59f87bcff92be6a2037af990c1c761fefcb32324be630621d","/runtime.c8b75212b128f6f9.js":"f7a2b5a4410cc838f7a7481fb18d7fe02672c83dc4b100623ed6b7084dde2b18","/3rdpartylicenses.txt":"712de3d37eac84b51830c33c76940639b4558dc69cd70e4b8f673a2e99b7defc","/polyfills.5af38888e22cc438.js":"75c6064cdb99ee74dd22da07b148e9c6bd2736c93e3aeb2d3b936b0437321346","/styles.e063aa2d57a2b04a.css":"8a37157af25911e1e1841074dc811565086696b5ac3ab0d780cd8d6cf7253fb6","/main.0d2f9756b66f4d4c.js":"3b3ef0bed826afd5e070a4bd917ffdb2982f4fe74320bc14eec99c4758a352d3"}}
+[debug] [2023-09-04T13:19:07.598Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/346740129785/sites/expense-expert/versions/fc4c175571c3fbfe:populateFiles 200
+[debug] [2023-09-04T13:19:07.599Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/346740129785/sites/expense-expert/versions/fc4c175571c3fbfe:populateFiles {"uploadRequiredHashes":["3b3ef0bed826afd5e070a4bd917ffdb2982f4fe74320bc14eec99c4758a352d3","5f768918287a20c59f87bcff92be6a2037af990c1c761fefcb32324be630621d","712de3d37eac84b51830c33c76940639b4558dc69cd70e4b8f673a2e99b7defc"],"uploadUrl":"https://upload-firebasehosting.googleapis.com/upload/sites/expense-expert/versions/fc4c175571c3fbfe/files"}
+[debug] [2023-09-04T13:19:07.602Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/expense-expert/versions/fc4c175571c3fbfe/files/3b3ef0bed826afd5e070a4bd917ffdb2982f4fe74320bc14eec99c4758a352d3 [none]
+[debug] [2023-09-04T13:19:07.603Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/expense-expert/versions/fc4c175571c3fbfe/files/3b3ef0bed826afd5e070a4bd917ffdb2982f4fe74320bc14eec99c4758a352d3 [stream]
+[debug] [2023-09-04T13:19:07.605Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/expense-expert/versions/fc4c175571c3fbfe/files/5f768918287a20c59f87bcff92be6a2037af990c1c761fefcb32324be630621d [none]
+[debug] [2023-09-04T13:19:07.606Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/expense-expert/versions/fc4c175571c3fbfe/files/5f768918287a20c59f87bcff92be6a2037af990c1c761fefcb32324be630621d [stream]
+[debug] [2023-09-04T13:19:07.609Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/expense-expert/versions/fc4c175571c3fbfe/files/712de3d37eac84b51830c33c76940639b4558dc69cd70e4b8f673a2e99b7defc [none]
+[debug] [2023-09-04T13:19:07.610Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/expense-expert/versions/fc4c175571c3fbfe/files/712de3d37eac84b51830c33c76940639b4558dc69cd70e4b8f673a2e99b7defc [stream]
+[debug] [2023-09-04T13:19:07.612Z] [hosting][populate queue][FINAL] {"max":979,"min":979,"avg":979,"active":0,"complete":1,"success":1,"errored":0,"retried":0,"total":1,"elapsed":989}
+[debug] [2023-09-04T13:19:07.613Z] [hosting] uploads queued: 3
+[debug] [2023-09-04T13:19:08.949Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/expense-expert/versions/fc4c175571c3fbfe/files/5f768918287a20c59f87bcff92be6a2037af990c1c761fefcb32324be630621d 200
+[debug] [2023-09-04T13:19:08.950Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/expense-expert/versions/fc4c175571c3fbfe/files/5f768918287a20c59f87bcff92be6a2037af990c1c761fefcb32324be630621d [stream]
+[debug] [2023-09-04T13:19:08.986Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/expense-expert/versions/fc4c175571c3fbfe/files/712de3d37eac84b51830c33c76940639b4558dc69cd70e4b8f673a2e99b7defc 200
+[debug] [2023-09-04T13:19:08.987Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/expense-expert/versions/fc4c175571c3fbfe/files/712de3d37eac84b51830c33c76940639b4558dc69cd70e4b8f673a2e99b7defc [stream]
+[debug] [2023-09-04T13:19:09.199Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/expense-expert/versions/fc4c175571c3fbfe/files/3b3ef0bed826afd5e070a4bd917ffdb2982f4fe74320bc14eec99c4758a352d3 200
+[debug] [2023-09-04T13:19:09.200Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/expense-expert/versions/fc4c175571c3fbfe/files/3b3ef0bed826afd5e070a4bd917ffdb2982f4fe74320bc14eec99c4758a352d3 [stream]
+[debug] [2023-09-04T13:19:09.200Z] [hosting][upload queue][FINAL] {"max":1599,"min":1349,"avg":1444.6666666666667,"active":0,"complete":3,"success":3,"errored":0,"retried":0,"total":3,"elapsed":1599}
+[info] +  hosting[expense-expert]: file upload complete 
+[debug] [2023-09-04T13:19:09.202Z] [hosting] deploy completed after 2671ms
+[debug] [2023-09-04T13:19:09.203Z] [
+  {
+    "config": {
+      "public": "dist",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "site": "expense-expert"
+    },
+    "version": "projects/346740129785/sites/expense-expert/versions/fc4c175571c3fbfe"
+  }
+]
+[info] i  hosting[expense-expert]: finalizing version... 
+[debug] [2023-09-04T13:19:09.208Z] >>> [apiv2][query] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/expense-expert/versions/fc4c175571c3fbfe updateMask=status%2Cconfig
+[debug] [2023-09-04T13:19:09.209Z] >>> [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/expense-expert/versions/fc4c175571c3fbfe {"status":"FINALIZED","config":{"rewrites":[{"glob":"**","path":"/index.html"}]}}
+[debug] [2023-09-04T13:19:10.158Z] <<< [apiv2][status] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/expense-expert/versions/fc4c175571c3fbfe 200
+[debug] [2023-09-04T13:19:10.159Z] <<< [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/expense-expert/versions/fc4c175571c3fbfe {"name":"projects/346740129785/sites/expense-expert/versions/fc4c175571c3fbfe","status":"FINALIZED","config":{"rewrites":[{"glob":"**","path":"/index.html"}]},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2023-09-04T13:19:03.878615Z","createUser":{"email":"BharathPrakash2395@gmail.com"},"finalizeTime":"2023-09-04T13:19:07.982467Z","finalizeUser":{"email":"BharathPrakash2395@gmail.com"}}
+[debug] [2023-09-04T13:19:10.161Z] [hosting] finalized version for expense-expert:[object Object]
+[info] +  hosting[expense-expert]: version finalized 
+[info] i  hosting[expense-expert]: releasing new version... 
+[debug] [2023-09-04T13:19:10.165Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/expense-expert/channels/live/releases versionName=projects%2F346740129785%2Fsites%2Fexpense-expert%2Fversions%2Ffc4c175571c3fbfe
+[debug] [2023-09-04T13:19:10.166Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/expense-expert/channels/live/releases {}
+[debug] [2023-09-04T13:19:11.107Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/expense-expert/channels/live/releases 200
+[debug] [2023-09-04T13:19:11.108Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/expense-expert/channels/live/releases {"name":"projects/346740129785/sites/expense-expert/channels/live/releases/1693833548341000","version":{"name":"projects/346740129785/sites/expense-expert/versions/fc4c175571c3fbfe","status":"FINALIZED","config":{"rewrites":[{"glob":"**","path":"/index.html"}]},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2023-09-04T13:19:03.878615Z","createUser":{"email":"BharathPrakash2395@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/AAcHTtfhTTCAXp0cn80NHkl-Dnu6fHMxFUqv3QcXOiQvwCfKJUQ"},"finalizeTime":"2023-09-04T13:19:07.982467Z","finalizeUser":{"email":"BharathPrakash2395@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/AAcHTtfhTTCAXp0cn80NHkl-Dnu6fHMxFUqv3QcXOiQvwCfKJUQ"}},"type":"DEPLOY","releaseTime":"2023-09-04T13:19:08.341Z","releaseUser":{"email":"BharathPrakash2395@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/AAcHTtfhTTCAXp0cn80NHkl-Dnu6fHMxFUqv3QcXOiQvwCfKJUQ"}}
+[debug] [2023-09-04T13:19:11.110Z] [hosting] release: {"name":"projects/346740129785/sites/expense-expert/channels/live/releases/1693833548341000","version":{"name":"projects/346740129785/sites/expense-expert/versions/fc4c175571c3fbfe","status":"FINALIZED","config":{"rewrites":[{"glob":"**","path":"/index.html"}]},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2023-09-04T13:19:03.878615Z","createUser":{"email":"BharathPrakash2395@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/AAcHTtfhTTCAXp0cn80NHkl-Dnu6fHMxFUqv3QcXOiQvwCfKJUQ"},"finalizeTime":"2023-09-04T13:19:07.982467Z","finalizeUser":{"email":"BharathPrakash2395@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/AAcHTtfhTTCAXp0cn80NHkl-Dnu6fHMxFUqv3QcXOiQvwCfKJUQ"}},"type":"DEPLOY","releaseTime":"2023-09-04T13:19:08.341Z","releaseUser":{"email":"BharathPrakash2395@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/AAcHTtfhTTCAXp0cn80NHkl-Dnu6fHMxFUqv3QcXOiQvwCfKJUQ"}}
+[info] +  hosting[expense-expert]: release complete 
+[info] 
+[info] +  Deploy complete! 
+[info] 
+[info] Project Console: https://console.firebase.google.com/project/expense-expert/overview
+[info] Hosting URL: https://expense-expert.web.app

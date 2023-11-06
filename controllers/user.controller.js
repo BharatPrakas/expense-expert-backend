@@ -1,12 +1,16 @@
 const User = require('../models').users;
 const mailService = require('../services/mail.service');
 const commonService = require('../services/common.service');
+const cryptoService = require('../services/crypto.service');
+const messageService = require('../services/message.service');
+const { PUSH_NOTIFICATION } = require('../constants/pushNotification');
 
 const createUser = async function (req, res) {
   let err;
   let body = req.body;
   let isMailSended;
   let isNewUser;
+  let mailOptions;
   [err, user] = await to(User.findOrCreate({
     where: {
       email: body.email
@@ -15,17 +19,25 @@ const createUser = async function (req, res) {
   }));
   if (err) return ReE(res, err, 422);
   if (user[1]) {
-    const data = { name: user[0].dataValues.name, userId: user[0].dataValues.id };
-    const template = commonService.parseTemplate(TEMPLATE.verification, data);
+    console.log(!user[0].dataValues.activated);
+    console.log('users', user[0].dataValues);
+    const userId = await cryptoService.encrypt(user[0].dataValues.id);
+    const data = { name: user[0].dataValues.name, userId: userId };
+    const template = commonService.parseTemplate(TEMPLATE.verification_V1, data);
     if (data && template) {
-      const mailOptions = {
+      mailOptions = {
         to: user[0].dataValues.email,
         subject: 'Verification'
       }
-      console.log(template);
+      console.log('mailoptions', mailOptions);
       [err, isMailSended] = await to(mailService.sendMail(mailOptions, template));
       if (err) return ReE(res, err, 422);
-      return ReS(res, { isNewUser: user[1] });
+    };
+    if (data) {
+      const message = commonService.parseTemplate(PUSH_NOTIFICATION.newUser.body, { name: data.name })
+      let body = { token: PUSH_NOTIFICATION.ADMIN_TOKEN, tittle: PUSH_NOTIFICATION.newUser.title, message: message };
+      [err, messageSended] = await to(messageService.sendPushNotification(body));
+      if (err) return ReE(res, err, 422);
     }
   }
   return ReS(res, { isNewUser: user[1] });
@@ -47,22 +59,14 @@ module.exports.getuserInfo = getuserInfo;
 const activateUser = async function (req, res) {
   let err;
   let body = req.body;
-  console.log(body);
-  [err, user] = await to(User.update(body, {
-    where: { id: body.userId },
+  let userId = cryptoService.decrypt(body.token);
+  [err, user] = await to(User.update({ activated: true }, {
+    where: { id: userId },
   }));
   if (err) return ReE(res, err, 422);
   return ReS(res, { user });
 }
 module.exports.activateUser = activateUser;
-
-const serviceRestart = async function (req, res) {
-  let err;
-  if (err) return ReE(res, err, 422);
-  return ReS(res, { message: 'Service restarted successfully!' });
-}
-module.exports.serviceRestart = serviceRestart;
-
 
 const changePasswordRequest = async function (req, res) {
   let err;
@@ -79,7 +83,8 @@ const changePasswordRequest = async function (req, res) {
         where: { id: user.dataValues.id }
       }));
       if (modified.length) {
-        const data = { name: user.dataValues.name, userId: user.dataValues.id };
+        const userId = await cryptoService.encrypt(user.dataValues.id);
+        const data = { name: user.dataValues.name, userId: userId };
         const template = commonService.parseTemplate(TEMPLATE.resetPasword, data);
         if (data && template) {
           const mailOptions = {
@@ -88,7 +93,7 @@ const changePasswordRequest = async function (req, res) {
           };
           [err, isMailSended] = await to(mailService.sendMail(mailOptions, template));
           if (err) return ReE(res, err, 422);
-          return ReS(res, { isMailSended });
+          return ReS(res, { isMailSended: "Reset password mail sended successfully!" });
         }
       }
       if (err) return ReE(res, err, 422);
@@ -102,9 +107,10 @@ module.exports.changePasswordRequest = changePasswordRequest;
 const updatePassword = async function (req, res) {
   let err;
   let body = req.body;
-  console.log(body);
+  const userId = cryptoService.decrypt(req.body.token);
+  console.log('userId', userId);
   [err, user] = await to(User.findOne({
-    where: { id: req.body.userId },
+    where: { id: userId },
     attributes: ['id', 'name', 'email', 'modified']
   }));
   if (err) return ReE(res, err, 422);
@@ -116,10 +122,40 @@ const updatePassword = async function (req, res) {
           { where: { id: user.dataValues.id }, individualHooks: true }
         ));
         if (err) return ReE(res, err, 422);
-        return ReS(res, { user });
+        return ReS(res, { message: "Password reset successfully!" });
       }
     }
     return ReS(res, { isExpired: true });
   }
 }
 module.exports.updatePassword = updatePassword;
+
+const resendVerificationEmail = async function (req, res) {
+  let err, isMailSended;
+  let body = req.body;
+  [err, user] = await to(User.findOne({ where: { email: body.email } }));
+  if (err) return ReE(res, err, 422);
+  if (user) {
+    const userId = await cryptoService.encrypt(user.dataValues.id);
+    const data = { name: user.dataValues.name, userId: userId };
+    const template = commonService.parseTemplate(TEMPLATE.verification_V1, data);
+    if (data && template) {
+      let mailOptions = {
+        to: body.email,
+        subject: 'Verification'
+      }
+      console.log('mailoptions', template);
+      [err, isMailSended] = await to(mailService.sendMail(mailOptions, template));
+      if (err) return ReE(res, err, 422);
+    };
+  }
+  return ReS(res, { isMailSended });
+}
+module.exports.resendVerificationEmail = resendVerificationEmail;
+
+const serviceRestart = async function (req, res) {
+  let err;
+  if (err) return ReE(res, err, 422);
+  return ReS(res, { message: 'Service restarted successfully!' });
+}
+module.exports.serviceRestart = serviceRestart;

@@ -1,10 +1,12 @@
 const moment = require('moment');
-const { Op } = require("sequelize");
+const { Op, literal } = require("sequelize");
 const Expense = require('../models').expense;
 const Earned = require('../models').earned;
 const Categories = require('../models').categories;
 const Budget = require('../models').budget;
 const EarnedCategory = require('../models').earnedcategory;
+const commonService = require('../services/common.service');
+const cryptoService = require('../services/crypto.service');
 
 const today = new Date();
 const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -23,7 +25,7 @@ const getCategories = async function (req, res) {
   let body = req.body;
   [err, category] = await to(Categories.findAll({
     where: {
-      [Op.or]: [{ userId: null }, { userId: body.userId }]
+      [Op.or]: [{ userId: null }, { userId: req.user.id }],
     },
     order: [['id']]
   }));
@@ -31,6 +33,47 @@ const getCategories = async function (req, res) {
   return ReS(res, { category });
 }
 module.exports.getCategories = getCategories;
+
+const sortCategory = async function (req, res) {
+  let err;
+  let body = req.body;
+  category = [];
+  const lendingCategoryId = 3;
+  [err, categoryRecords] = await to(Categories.findAll({
+    where: {
+      [Op.or]: [{ userId: null }, { userId: body.userId }],
+      [Op.not]: { id: lendingCategoryId }
+    },
+    attributes: ['id', 'name']
+  }));
+  if (categoryRecords && categoryRecords.length) {
+    for (let i = 0; i < categoryRecords.length; i++) {
+      [err, respon] = await to(Expense.count({
+        where: {
+          [Op.and]: [{ categoryId: categoryRecords[i].dataValues.id }, { userId: body.userId }],
+        },
+      }));
+      category.push({
+        id: categoryRecords[i].dataValues.id,
+        name: categoryRecords[i].dataValues.name,
+        count: respon
+      });
+    };
+  };
+  for (let i = 0; i < category.length; i++) {
+    for (let j = 0; j < category.length; j++) {
+      console.log(category[i].count, category[j].count);
+      if (category[i].count > category[j].count) {
+        let temp = category[i];
+        category[i] = category[j];
+        category[j] = temp;
+      }
+    }
+  }
+  if (err) return ReE(res, err, 422);
+  return ReS(res, { category });
+}
+module.exports.sortCategory = sortCategory;
 
 const addCategory = async function (req, res) {
   let err;
@@ -69,6 +112,7 @@ module.exports.deleteCategory = deleteCategory;
 const addExpense = async function (req, res) {
   let err;
   let body = req.body;
+  body.userId = req.user.id;
   [err, expense] = await to(Expense.create(body));
   if (err) return ReE(res, err, 422);
   return ReS(res, { expense });
@@ -80,9 +124,10 @@ const getExpenses = async function (req, res) {
   let body = req.body;
   [err, allExpense] = await to(Expense.findAll({
     include: [
-      { model: Categories, attributes: ['name'] }
+      { model: Categories, attributes: ['name', 'icon', 'color'] }
     ],
-    where: { userId: body.userId, },
+    attributes: ['id', [literal('ABS(amount)'), 'amount'], 'description', 'created'],
+    where: { userId: req.user.id, },
     order: [
       ['created', 'DESC'],
     ],
@@ -95,11 +140,12 @@ module.exports.getExpenses = getExpenses;
 const getExpense = async function (req, res) {
   let err;
   let body = req.body;
+  let id = cryptoService.decrypt(body.id);
   [err, expense] = await to(Expense.findOne({
     include: [
       { model: Categories, attributes: ['name'] }
     ],
-    where: { id: body.id },
+    where: { id: id },
   }));
   if (err) return ReE(res, err, 422);
   return ReS(res, { expense });
@@ -119,7 +165,7 @@ const todayExpenses = async function (req, res) {
           moment.utc(today).format('YYYY-MM-DD 23:59:59')
         ]
       },
-      userId: body.userId
+      userId: req.user.id
     },
   }));
   allExpense.forEach(expense => {
@@ -144,7 +190,7 @@ const currentMonthExpense = async function (req, res) {
           moment.utc(today).format('YYYY-MM-DD 23:59:59')
         ]
       },
-      userId: body.userId
+      userId: req.user.id
     },
   }));
   monthExpense.forEach(expense => {
@@ -172,7 +218,7 @@ const categoryExpense = async function (req, res) {
             moment.utc(today).format('YYYY-MM-DD 23:59:59')
           ]
         },
-        userId: body.userId,
+        userId: req.user.id,
       },
       attributes: ['amount']
     },
@@ -210,7 +256,7 @@ const getWeeklyExpense = async function (req, res) {
             moment.utc(days).format('YYYY-MM-DD 23:59:59'),
           ],
         },
-        userId: body.userId,
+        userId: req.user.id,
       },
       attributes: ['amount', 'created']
     }));
@@ -231,7 +277,7 @@ const getBudget = async function (req, res) {
     include:
       { model: Categories },
     where: {
-      userId: body.userId,
+      userId: req.user.id,
     },
     attributes: ['id', 'limit']
   }));
@@ -245,7 +291,7 @@ const setBudget = async function (req, res) {
   let body = req.body;
   [err, createdBudget] = await to(Budget.findOrCreate({
     where: {
-      userId: body.userId,
+      userId: req.user.id,
       categoryId: body.categoryId,
     },
     defaults: body,
@@ -260,7 +306,7 @@ const updateBudget = async function (req, res) {
   let body = req.body;
   [err, updatedBudget] = await to(Budget.update(body, {
     where: {
-      [Op.and]: [{ id: body.id }, { userId: body.userId }]
+      [Op.and]: [{ id: body.id }, { userId: req.user.id }]
     }
   }));
   if (err) return ReE(res, err, 422);
@@ -309,7 +355,7 @@ const dateFilter = async function (req, res) {
                 moment.utc(today).format('YYYY-MM-DD 23:59:59'),
               ],
             },
-            userId: body.userId,
+            userId: req.user.id,
           },
           order: [
             ['created', 'DESC'],
@@ -331,7 +377,7 @@ const dateFilter = async function (req, res) {
                 moment.utc(yesterday).format('YYYY-MM-DD 23:59:59'),
               ],
             },
-            userId: body.userId,
+            userId: req.user.id,
           },
           order: [
             ['created', 'DESC'],
@@ -355,7 +401,7 @@ const dateFilter = async function (req, res) {
                 moment.utc(endDate).format('YYYY-MM-DD 23:59:59'),
               ],
             },
-            userId: body.userId,
+            userId: req.user.id,
           },
           order: [
             ['created', 'DESC'],
@@ -379,7 +425,7 @@ const dateFilter = async function (req, res) {
                 moment.utc(monthEnd).format('YYYY-MM-DD 23:59:59'),
               ],
             },
-            userId: body.userId,
+            userId: req.user.id,
           },
           order: [
             ['created', 'DESC'],
@@ -405,7 +451,7 @@ const dateFilter = async function (req, res) {
                   moment.utc(today).format('YYYY-MM-DD 23:59:59'),
                 ],
               },
-              userId: body.userId,
+              userId: req.user.id,
             },
             order: [
               ['created', 'DESC'],
@@ -431,7 +477,7 @@ const dateFilter = async function (req, res) {
                   moment.utc(yesterday).format('YYYY-MM-DD 23:59:59'),
                 ],
               },
-              userId: body.userId,
+              userId: req.user.id,
             },
             order: [
               ['created', 'DESC'],
@@ -459,7 +505,7 @@ const dateFilter = async function (req, res) {
                   moment.utc(endDate).format('YYYY-MM-DD 23:59:59'),
                 ],
               },
-              userId: body.userId,
+              userId: req.user.id,
             },
             order: [
               ['created', 'DESC'],
@@ -487,7 +533,7 @@ const dateFilter = async function (req, res) {
                   moment.utc(monthEnd).format('YYYY-MM-DD 23:59:59'),
                 ],
               },
-              userId: body.userId,
+              userId: req.user.id,
             },
             order: [
               ['created', 'DESC'],
@@ -510,15 +556,17 @@ const categoryBudget = async function (req, res) {
   let err;
   let body = req.body;
   let expense = [];
+  let firstDay = moment.utc().startOf('month');
+  let today = moment.utc().startOf('day');
   [err, categories] = await to(Categories.findAll({
     where: {
-      [Op.or]: [{ userId: null }, { userId: body.userId }],
+      [Op.or]: [{ userId: null }, { userId: req.user.id }],
     },
     include: [{
       required: false,
       model: Expense,
       where: {
-        userId: body.userId,
+        userId: req.user.id,
         created: {
           [Op.between]: [
             moment.utc(firstDay).format('YYYY-MM-DD 00:00:00'),
@@ -548,7 +596,7 @@ const categoryBudget = async function (req, res) {
       [err, budget] = await to(Budget.findOne({
         where: {
           [Op.and]: [{ categoryId: categories[i].dataValues.id }, {
-            [Op.or]: [{ userId: body.userId }, { userId: null }]
+            [Op.or]: [{ userId: req.user.id }, { userId: null }]
           }],
         }
       }));
@@ -563,3 +611,51 @@ const categoryBudget = async function (req, res) {
   return ReS(res, { expense });
 }
 module.exports.categoryBudget = categoryBudget;
+
+const recentTransactions = async function (req, res) {
+  let err;
+  let transactions;
+  let sortedTransactions = [];
+  const start = moment.utc().subtract(15, 'days');
+  const end = moment().utc();
+  [err, recentExpense] = await to(Expense.findAll({
+    include: {
+      model: Categories,
+      attributes: ['name', 'icon', 'color'],
+    },
+    where: {
+      created: {
+        [Op.between]: [
+          moment.utc(start).format('YYYY-MM-DD 00:00:00'),
+          moment.utc(end).format('YYYY-MM-DD 23:59:59')
+        ]
+      },
+      userId: req.user.id
+    },
+  }));
+  [err, recentEarnings] = await to(Earned.findAll({
+    include: [{
+      model: EarnedCategory,
+      attributes: ['name'],
+    }],
+    where: {
+      created: {
+        [Op.between]: [
+          moment.utc(start).format('YYYY-MM-DD 00:00:00'),
+          moment.utc(end).format('YYYY-MM-DD 23:59:59')
+        ]
+      },
+      userId: req.user.id
+    },
+  }));
+  if (recentExpense && recentEarnings) {
+    transactions = recentExpense.concat(recentEarnings);
+    transactions.forEach((x) => {
+      sortedTransactions.push(x.dataValues);
+    });
+    transactions = commonService.sortDate(sortedTransactions, 'created');
+  }
+  if (err) return ReE(res, err, 422);
+  return ReS(res, { transactions });
+}
+module.exports.recentTransactions = recentTransactions;

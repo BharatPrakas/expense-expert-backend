@@ -14,6 +14,9 @@ const login = async function (req, res) {
     };
     [err, token] = await to(user.getJWT());
     if (err) return ReE(res, err, 422);
+    if (!user.dataValues.activated) {
+      return ReS(res, { user: { activated: user.dataValues.activated } });
+    }
     return ReS(res, { token, refreshToken: refreshToken, user: user });
   }
   if (err) return ReE(res, err, 422);
